@@ -21,5 +21,5 @@ module.exports = (Table, event) => {
         Key: key
     };
 
-    return dynamoDb.delete(params).promise().then((rs) => []);
+    return dynamoDb.delete(params).promise().then((resource) => []);
 }

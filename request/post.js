@@ -21,5 +21,5 @@ module.exports = (Table, event) => {
         Item: item
     };
 
-    return dynamoDb.put(params).promise().then((rs) => item);
+    return dynamoDb.put(params).promise().then((resource) => item);
 };

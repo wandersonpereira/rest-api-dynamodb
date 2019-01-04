@@ -45,5 +45,5 @@ module.exports = (Table, event) => {
         params.ExpressionAttributeValues[`:${property}`] = editedItem[property];
     });
 
-    return dynamoDb.update(params).promise().then((rs) => []);
+    return dynamoDb.update(params).promise().then((resource) => []);
 };

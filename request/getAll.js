@@ -11,26 +11,28 @@ module.exports = (Table, event) => {
 
     let Keys = Object.keys(event.queryStringParameters || {});
     let params = {};
-    let stringKeyCondition = '';
+    let arrayKeyCondition = [];
     let attributes = {};
+    let indexName = null;
+    let indexKey = 0;
 
     // Prepare all attributes to batchGetItem in dynamodb
     // use the documentation (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#query-property)
-    Keys = Keys.map((attributeName, indexKey) => {
-        attributes[':S' + (indexKey + 1)] = event.queryStringParameters[attributeName];
-
-        let and = '';
-        if (indexKey < (Keys.length - 1)) {
-            and = ' and ';
+    Keys.map((attributeName) => {
+        if (['IndexName'].indexOf(attributeName) >= 0) {
+            indexName = event.queryStringParameters[attributeName];
+            return null;
         }
 
-        stringKeyCondition += attributeName + ' = :S' + (indexKey + 1) + and;
+        attributes[':S' + (indexKey + 1)] = event.queryStringParameters[attributeName];
+        arrayKeyCondition.push(`${attributeName} = :S${(indexKey + 1)}`);
 
+        indexKey++;
         return attributes;
     });
 
 
-    if (Keys.length <= 0) {
+    if (Object.keys(attributes).length <= 0) {
         params = {
             TableName: Table.tableName
         };
@@ -40,9 +42,13 @@ module.exports = (Table, event) => {
 
     params = {
         ExpressionAttributeValues: attributes,
-        KeyConditionExpression: stringKeyCondition,
+        KeyConditionExpression: arrayKeyCondition.join(' and '),
         TableName: Table.tableName
     };
+
+    if (indexName !== null) {
+        params.IndexName = indexName;
+    }
 
     return dynamoDb.query(params).promise().then(response => response.Items);
 };
