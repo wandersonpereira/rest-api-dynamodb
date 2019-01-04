@@ -10,7 +10,7 @@ const GetAll = require('./getAll');
  */
 module.exports = (Table, event) => {
 
-    const requestedItemId = event.pathParameters.id;
+    const requestedItemId = (event.pathParameters || {}).id || false;
     if (!requestedItemId) {
         return GetAll(Table, event);
     }

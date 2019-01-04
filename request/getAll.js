@@ -11,15 +11,20 @@ module.exports = (Table, event) => {
 
     let Keys = Object.keys(event.queryStringParameters || {});
     let params = {};
+    let stringKeyCondition = '';
+    let attributes = {};
 
     // Prepare all attributes to batchGetItem in dynamodb
-    // use the documentation (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#batchGetItem-property)
-    Keys = Keys.map(attributeName => {
-        const attributes = {};
+    // use the documentation (https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB.html#query-property)
+    Keys = Keys.map((attributeName, indexKey) => {
+        attributes[':S' + (indexKey + 1)] = event.queryStringParameters[attributeName];
 
-        attributes[attributeName] = {
-            'S' : event.queryStringParameters[attributeName]
-        };
+        let and = '';
+        if (indexKey < (Keys.length - 1)) {
+            and = ' and ';
+        }
+
+        stringKeyCondition += attributeName + ' = :S' + (indexKey + 1) + and;
 
         return attributes;
     });
@@ -33,7 +38,11 @@ module.exports = (Table, event) => {
         return dynamoDb.scan(params).promise().then(response => response.Items)
     }
 
-    params[Table.tableName] = {Keys};
+    params = {
+        ExpressionAttributeValues: attributes,
+        KeyConditionExpression: stringKeyCondition,
+        TableName: Table.tableName
+    };
 
-    return dynamoDb.batchGetItem(params).promise().then(response => response.Items);
+    return dynamoDb.query(params).promise().then(response => response.Items);
 };

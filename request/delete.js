@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const ErrorResponse = require('../lib/error');
 
 /**
  * Delete register in table from the dynamodb
@@ -12,7 +11,7 @@ module.exports = (Table, event) => {
 
     const requestedItemId = event.pathParameters.id;
     if (!requestedItemId) {
-        throw new ErrorResponse(`Error: You're missing the id parameter`);
+        throw new Error(`Error: You're missing the id parameter`);
     }
 
     let key = {};

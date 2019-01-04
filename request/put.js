@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const ErrorResponse = require('../lib/error');
 
 /**
  * Update registry in table from the dynamodb
@@ -11,20 +10,20 @@ const ErrorResponse = require('../lib/error');
 module.exports = (Table, event) => {
 
     if (!event.body) {
-        throw new ErrorResponse('no body arguments provided');
+        throw new Error('no body arguments provided');
     }
 
     const editedItemId = event.pathParameters.id;
 
     if (!editedItemId) {
-        throw new ErrorResponse('invalid id specified');
+        throw new Error('invalid id specified');
     }
 
     const editedItem = JSON.parse(event.body);
     const editedItemProperties = Object.keys(editedItem);
 
     if (!editedItem || editedItemProperties.length < 1) {
-        throw new ErrorResponse('no args provided');
+        throw new Error('no args provided');
     }
 
     const key = {};

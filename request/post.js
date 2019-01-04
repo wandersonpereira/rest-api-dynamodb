@@ -1,7 +1,6 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const uuidv4 = require('uuid/v4');
-const ErrorResponse = require('../lib/error');
 
 /**
  * Insert registry in table from the dynamodb
@@ -11,7 +10,7 @@ const ErrorResponse = require('../lib/error');
  */
 module.exports = (Table, event) => {
     if (!event.body) {
-        throw new ErrorResponse('invalid');
+        throw new Error('invalid');
     }
 
     let item = JSON.parse(event.body);
