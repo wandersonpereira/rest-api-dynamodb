@@ -1,0 +1,14 @@
+{
+  "name": "rest_api_dynamodb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+  },
+  "config": {
+    "table_name": "desks"
+  },
+  "keywords": [],
+  "author": "Wanderson Pereira <wanderson.coord@gmail.com>",
+  "license": "MIT"
+}
