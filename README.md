@@ -5,7 +5,7 @@ For configuration to Lambda function, above all, you need to create the tables i
 
 Exemple Table **User** and Primary Key **UserId**.
 
----------AddImage---------
+![DynamoDb](./images/dynamodb.jpg)
 
 Then, you need create a AWS IAM Role with permission in all required tables from the DynamoDb. 
 
@@ -19,9 +19,7 @@ Lastly, you will create the API Gateway and to point all request methods for the
 ### Exemple
 Example of use to api endpoints
 
---------AddImage -----
-
-
+![Api Gateway](./images/apigateway.jpg)
 
 #### /user
 It Api Gateway is configured the resource with **user** in the methods:
